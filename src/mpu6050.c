@@ -109,7 +109,7 @@ static int16_t Mpu6050_GetGyroRawData(Mpu6050_Dev_t *pDev, Mpu6050_GyroRawData_t
 }
 
 /* Read configuration from REG_PWR_MGMT_1 register */
-static int16_t Bmx280_ReadPwrMgmt1(Mpu6050_Dev_t *pDev, uint8_t *cfg)
+static int16_t Mpu6050_ReadPwrMgmt1(Mpu6050_Dev_t *pDev, uint8_t *cfg)
 {
     int16_t err = MPU6050_OK;
     uint8_t reg = REG_PWR_MGMT_1;
@@ -134,7 +134,7 @@ static int16_t Bmx280_ReadPwrMgmt1(Mpu6050_Dev_t *pDev, uint8_t *cfg)
 }
 
 /* Read configuration from REG_PWR_MGMT_2 register */
-static int16_t Bmx280_ReadPwrMgmt2(Mpu6050_Dev_t *pDev, uint8_t *cfg)
+static int16_t Mpu6050_ReadPwrMgmt2(Mpu6050_Dev_t *pDev, uint8_t *cfg)
 {
     int16_t err = MPU6050_OK;
     uint8_t reg = REG_PWR_MGMT_2;
@@ -193,7 +193,7 @@ int16_t Mpu6050_Init(Mpu6050_Dev_t *pDev, const Mpu6050_Config_t *pConfig)
     mpu6050_i2c_hal_ms_delay(50);
 
     /* Set device to normal mode */
-    err |= Bmx280_SetPowerMode(pDev, PWR_MODE_NORMAL);
+    err |= Mpu6050_SetPowerMode(pDev, PWR_MODE_NORMAL);
 
     mpu6050_i2c_hal_ms_delay(50);
 
@@ -217,7 +217,7 @@ int16_t Mpu6050_Init(Mpu6050_Dev_t *pDev, const Mpu6050_Config_t *pConfig)
 * @return       int16_t     Return code.
 *
 */
-int16_t Bmx280_SetPowerMode(Mpu6050_Dev_t *pDev, Mpu6050_PwrMode_t ePwrMode)
+int16_t Mpu6050_SetPowerMode(Mpu6050_Dev_t *pDev, Mpu6050_PwrMode_t ePwrMode)
 {
     int16_t err = MPU6050_OK;
     uint8_t reg = REG_PWR_MGMT_1;
@@ -236,7 +236,7 @@ int16_t Bmx280_SetPowerMode(Mpu6050_Dev_t *pDev, Mpu6050_PwrMode_t ePwrMode)
     }
     else
     {
-        err |= Bmx280_ReadPwrMgmt1(pDev, &cfg);
+        err |= Mpu6050_ReadPwrMgmt1(pDev, &cfg);
 
         if (MPU6050_OK == err)
         {
@@ -291,7 +291,7 @@ int16_t Mpu6050_Reset(Mpu6050_Dev_t *pDev)
     }
     else
     {
-        err |= Bmx280_ReadPwrMgmt1(pDev, &cfg);
+        err |= Mpu6050_ReadPwrMgmt1(pDev, &cfg);
 
         if (MPU6050_OK == err)
         {
@@ -335,7 +335,7 @@ int16_t Mpu6050_ClockSelect(Mpu6050_Dev_t *pDev, Mpu6050_ClkSrc_t eClkSrc)
     }
     else
     {
-        err |= Bmx280_ReadPwrMgmt1(pDev, &cfg);
+        err |= Mpu6050_ReadPwrMgmt1(pDev, &cfg);
 
         if (MPU6050_OK == err)
         {
@@ -485,7 +485,7 @@ int16_t Mpu6050_LpWakeCtrl(Mpu6050_Dev_t *pDev, Mpu6050_LpWakeCtrl_t eLpWakeCtrl
     }
     else
     {
-        err |= Bmx280_ReadPwrMgmt2(pDev, &cfg);
+        err |= Mpu6050_ReadPwrMgmt2(pDev, &cfg);
 
         if (MPU6050_OK == err)
         {

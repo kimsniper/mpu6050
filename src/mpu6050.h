@@ -241,7 +241,7 @@ int16_t Mpu6050_Init(Mpu6050_Dev_t *pDev, const Mpu6050_Config_t *pConfig);
 * @return       int16_t     Return code.
 *
 */
-int16_t Bmx280_SetPowerMode(Mpu6050_Dev_t *pDev, Mpu6050_PwrMode_t ePwrMode);
+int16_t Mpu6050_SetPowerMode(Mpu6050_Dev_t *pDev, Mpu6050_PwrMode_t ePwrMode);
 
 /**
 * @brief        Reset device.
