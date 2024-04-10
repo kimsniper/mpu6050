@@ -43,5 +43,17 @@ See the [Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/l
 ## Example Output
 
 ```bash
+I (323) main_task: Started on CPU0
+I (333) main_task: Calling app_main()
+I (533) example_usage: Revision ID: 0x68
+I (533) example_usage: MPU6050 initialization successful
+I (533) example_usage: Accelerometer:
+I (533) example_usage: Linear Acceleration X = 1.64m/s^2
+I (543) example_usage: Linear Acceleration Y = -1.03m/s^2
+I (543) example_usage: Linear Acceleration Z = 7.99m/s^2
+I (553) example_usage: Gyroscope:
+I (553) example_usage: Angular Velocity X = -1.46°/s
+I (563) example_usage: Angular Velocity Y = 0.49°/s
+I (563) example_usage: Angular Velocity Z = 0.79°/s
 
 ```
