@@ -30,7 +30,9 @@
  */
 
 #include "mpu6050.h" 
-#include "mpu6050_hal.h" 
+#include "mpu6050_hal.h"
+
+#include "stddef.h"
 
 /*==================================================================================================
 *                                       GLOBAL INIT
@@ -222,7 +224,7 @@ int16_t Mpu6050_SetPowerMode(Mpu6050_Dev_t *pDev, Mpu6050_PwrMode_t ePwrMode)
     int16_t err = MPU6050_OK;
     uint8_t reg = REG_PWR_MGMT_1;
     uint8_t cfg = 0U;
-    uint8_t data[2U];
+    uint8_t data[2U] = {0U};
 
     /* NULL parameter checking */
     if(NULL == pDev)
@@ -282,7 +284,7 @@ int16_t Mpu6050_Reset(Mpu6050_Dev_t *pDev)
     int16_t err = MPU6050_OK;
     uint8_t reg = REG_PWR_MGMT_1;
     uint8_t cfg = 0U;
-    uint8_t data[2U];
+    uint8_t data[2U] = {0U};
 
     /* NULL parameter checking */
     if(NULL == pDev)
@@ -321,7 +323,7 @@ int16_t Mpu6050_ClockSelect(Mpu6050_Dev_t *pDev, Mpu6050_ClkSrc_t eClkSrc)
     int16_t err = MPU6050_OK;
     uint8_t reg = REG_PWR_MGMT_1;
     uint8_t cfg = 0U;
-    uint8_t data[2U];
+    uint8_t data[2U] = {0U};
 
     /* NULL parameter checking */
     if(NULL == pDev)
@@ -340,7 +342,8 @@ int16_t Mpu6050_ClockSelect(Mpu6050_Dev_t *pDev, Mpu6050_ClkSrc_t eClkSrc)
         if (MPU6050_OK == err)
         {
             data[0] = reg;
-            data[1] = cfg | ((uint8_t)eClkSrc | CLKSEL_MASK);
+            data[1] = cfg & ~CLKSEL_MASK;
+            data[1] |= (uint8_t)eClkSrc;
 
             err |= mpu6050_i2c_hal_write(pDev->u8I2cAddress, pDev->pI2cPort, data, 2U);
         }
@@ -365,7 +368,7 @@ int16_t Mpu6050_AccelFsSel(Mpu6050_Dev_t *pDev, Mpu6050_AfsSel_t eAfsSel)
     int16_t err = MPU6050_OK;
     uint8_t reg = REG_ACCEL_CONFIG;
     uint8_t cfg = 0U;
-    uint8_t data[2U];
+    uint8_t data[2U] = {0U};
 
     /* NULL parameter checking */
     if(NULL == pDev)
@@ -384,7 +387,8 @@ int16_t Mpu6050_AccelFsSel(Mpu6050_Dev_t *pDev, Mpu6050_AfsSel_t eAfsSel)
         if (MPU6050_OK == err)
         {
             data[0] = reg;
-            data[1] = cfg | ((uint8_t)eAfsSel << ACCEL_FS_SEL_SHIFT);
+            data[1] = cfg & ~ACCEL_FS_SEL_MASK;
+            data[1] |= ((uint8_t)eAfsSel << ACCEL_FS_SEL_SHIFT);
 
             err |= mpu6050_i2c_hal_write(pDev->u8I2cAddress, pDev->pI2cPort, data, 2U);
 
@@ -418,7 +422,7 @@ int16_t Mpu6050_GyroFsSel(Mpu6050_Dev_t *pDev, Mpu6050_FsSel_t eFsSel)
     int16_t err = MPU6050_OK;
     uint8_t reg = REG_GYRO_CONFIG;
     uint8_t cfg = 0U;
-    uint8_t data[2U];
+    uint8_t data[2U] = {0U};
 
     /* NULL parameter checking */
     if(NULL == pDev)
@@ -437,7 +441,8 @@ int16_t Mpu6050_GyroFsSel(Mpu6050_Dev_t *pDev, Mpu6050_FsSel_t eFsSel)
         if (MPU6050_OK == err)
         {
             data[0] = reg;
-            data[1] = cfg | ((uint8_t)eFsSel << GYRO_FS_SEL_SHIFT);
+            data[1] = cfg & ~GYRO_FS_SEL_MASK;
+            data[1] |= ((uint8_t)eFsSel << GYRO_FS_SEL_SHIFT);
 
             err |= mpu6050_i2c_hal_write(pDev->u8I2cAddress, pDev->pI2cPort, data, 2U);
 
@@ -449,6 +454,46 @@ int16_t Mpu6050_GyroFsSel(Mpu6050_Dev_t *pDev, Mpu6050_FsSel_t eFsSel)
             {
                 u8FsSelCurrentVal = (cfg & GYRO_FS_SEL_MASK) >> GYRO_FS_SEL_SHIFT;
             }
+        }
+    }
+
+    return err;
+}
+
+/*================================================================================================*/
+/**
+* @brief        Configures the DLPF setting.
+* @details      Configures the digital low pass filter setting.
+*
+* @param[in]    pDev        Pointer to device handler.
+* @param[in]    eDlpfCfg    Digital low pass filter setting value.
+*
+* @return       int16_t     Return code.
+*
+*/
+int16_t Mpu6050_DlpfConfig(Mpu6050_Dev_t *pDev, Mpu6050_DlpfCfg_t eDlpfCfg)
+{
+    int16_t err = MPU6050_OK;
+    uint8_t reg = REG_CONFIG;
+    uint8_t cfg = 0U;
+    uint8_t data[2] = {0U};
+
+    /* Parameter check */
+    if(eDlpfCfg > DLPF_CFG_5_5)
+    {
+        err |= MPU6050_ERR;
+    }
+    else
+    {
+        err |= mpu6050_i2c_hal_read(pDev->u8I2cAddress, pDev->pI2cPort, &reg, &cfg, 1U);
+
+        if (MPU6050_OK == err)
+        {
+            data[0] = reg;
+            data[1] = cfg & ~DLPF_CFG_MASK;
+            data[1] |= (uint8_t)eDlpfCfg;
+
+            err |= mpu6050_i2c_hal_write(pDev->u8I2cAddress, pDev->pI2cPort, data, 2U);
         }
     }
 
@@ -471,7 +516,7 @@ int16_t Mpu6050_LpWakeCtrl(Mpu6050_Dev_t *pDev, Mpu6050_LpWakeCtrl_t eLpWakeCtrl
     int16_t err = MPU6050_OK;
     uint8_t reg = REG_PWR_MGMT_1;
     uint8_t cfg = 0U;
-    uint8_t data[2U];
+    uint8_t data[2U] = {0U};
 
     /* NULL parameter checking */
     if(NULL == pDev)

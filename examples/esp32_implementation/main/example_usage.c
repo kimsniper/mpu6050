@@ -10,7 +10,7 @@
 static const char *TAG = "example_usage";
 
 Mpu6050_Dev_t Dev = {
-    I2C_NUM_0,
+    (uint8_t)I2C_NUM_0,
     I2C_ADDRESS_MPU5060_AD0_L
 };
 
@@ -21,7 +21,7 @@ void app_main(void)
     Mpu6050_AccelData_t AccelData;
     Mpu6050_GyroData_t GyroData;
 
-    err |= mpu6050_hal_init();
+    err |= mpu6050_hal_init(Dev.pI2cPort);
 
     err |= Mpu6050_Init(&Dev, &Mpu6050_DefaultConfig);
 

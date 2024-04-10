@@ -52,7 +52,7 @@
 * @return       int16_t     Return code.
 *
 */
-int16_t mpu6050_hal_init()
+int16_t mpu6050_hal_init(uint8_t pI2cPort)
 {
     int16_t err = MPU6050_OK;
 
@@ -67,9 +67,9 @@ int16_t mpu6050_hal_init()
         .master.clk_speed = I2C_MASTER_FREQ_HZ,
     };
 
-    i2c_param_config(I2C_MASTER_NUM, &conf);
+    i2c_param_config((i2c_port_t)pI2cPort, &conf);
 
-    if(i2c_driver_install(I2C_MASTER_NUM, conf.mode, I2C_MASTER_RX_BUF_DISABLE, I2C_MASTER_TX_BUF_DISABLE, 0) == ESP_FAIL)
+    if(i2c_driver_install((i2c_port_t)pI2cPort, conf.mode, I2C_MASTER_RX_BUF_DISABLE, I2C_MASTER_TX_BUF_DISABLE, 0) == ESP_FAIL)
     {
         err = MPU6050_ERR;
     }
@@ -90,7 +90,7 @@ int16_t mpu6050_hal_init()
 * @return       int16_t     Return code.
 *
 */
-int16_t mpu6050_i2c_hal_read(const uint8_t address, void *pI2cPort, uint8_t *reg, uint8_t *pRxBuffer, const uint16_t count)
+int16_t mpu6050_i2c_hal_read(const uint8_t address, uint8_t pI2cPort, uint8_t *reg, uint8_t *pRxBuffer, const uint16_t count)
 {
     int16_t err = MPU6050_OK;
 
@@ -104,7 +104,7 @@ int16_t mpu6050_i2c_hal_read(const uint8_t address, void *pI2cPort, uint8_t *reg
 	i2c_master_write_byte(cmd, address << 1 | I2C_MASTER_READ, 1);
 	i2c_master_read(cmd, pRxBuffer, count, I2C_MASTER_LAST_NACK);
 	i2c_master_stop(cmd);
-	if(i2c_master_cmd_begin(I2C_NUM_0, cmd, I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS) == ESP_FAIL)
+	if(i2c_master_cmd_begin((i2c_port_t)pI2cPort, cmd, I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS) == ESP_FAIL)
     {
         err = MPU6050_ERR;
     }
@@ -125,7 +125,7 @@ int16_t mpu6050_i2c_hal_read(const uint8_t address, void *pI2cPort, uint8_t *reg
 * @return       int16_t     Return code.
 *
 */
-int16_t mpu6050_i2c_hal_write(const uint8_t address, void *pI2cPort, uint8_t *pTxBuffer, const uint16_t count)
+int16_t mpu6050_i2c_hal_write(const uint8_t address, uint8_t pI2cPort, uint8_t *pTxBuffer, const uint16_t count)
 {
     int16_t err = MPU6050_OK;
 
@@ -136,7 +136,7 @@ int16_t mpu6050_i2c_hal_write(const uint8_t address, void *pI2cPort, uint8_t *pT
     i2c_master_write_byte(cmd, (address << 1) | I2C_MASTER_WRITE, 1);
     i2c_master_write(cmd, pTxBuffer, count, 1);
     i2c_master_stop(cmd);
-    if(i2c_master_cmd_begin(I2C_NUM_0, cmd, I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS) == ESP_FAIL)
+    if(i2c_master_cmd_begin((i2c_port_t)pI2cPort, cmd, I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS) == ESP_FAIL)
     {
         err = MPU6050_ERR;
     }

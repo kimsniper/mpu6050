@@ -52,7 +52,7 @@ extern "C" {
 * @return       int16_t     Return code.
 *
 */
-int16_t mpu6050_hal_init();
+int16_t mpu6050_hal_init(uint8_t pI2cPort);
 
 /**
 * @brief        Execute I2C read.
@@ -66,7 +66,7 @@ int16_t mpu6050_hal_init();
 * @return       int16_t     Return code.
 *
 */
-int16_t mpu6050_i2c_hal_read(const uint8_t address, void *pI2cPort, uint8_t *reg, uint8_t *pRxBuffer, const uint16_t count);
+int16_t mpu6050_i2c_hal_read(const uint8_t address, uint8_t pI2cPort, uint8_t *reg, uint8_t *pRxBuffer, const uint16_t count);
 
 /**
 * @brief        Execute I2C write.
@@ -79,7 +79,7 @@ int16_t mpu6050_i2c_hal_read(const uint8_t address, void *pI2cPort, uint8_t *reg
 * @return       int16_t     Return code.
 *
 */
-int16_t mpu6050_i2c_hal_write(const uint8_t address, void *pI2cPort, uint8_t *pTxBuffer, const uint16_t count);
+int16_t mpu6050_i2c_hal_write(const uint8_t address, uint8_t pI2cPort, uint8_t *pTxBuffer, const uint16_t count);
 
 /**
 * @brief        Execute ms delay.

@@ -36,7 +36,6 @@
 extern "C" {
 #endif
 
-#include "stdbool.h"
 #include "mpu6050_hal.h"
 
 typedef enum{
@@ -136,7 +135,7 @@ typedef struct{
  * @brief Driver handler type definitions.
  */
 typedef struct{
-    void *pI2cPort;             /** @brief I2C port/instance */
+    uint8_t pI2cPort;           /** @brief I2C port/instance */
     uint8_t u8I2cAddress;       /** @brief I2C address */
 } Mpu6050_Dev_t;
 
@@ -186,6 +185,8 @@ extern Mpu6050_Config_t Mpu6050_DefaultConfig;
 
 #define ACCEL_FS_SEL_MASK               ((uint8_t)0x18U)
 #define ACCEL_FS_SEL_SHIFT              ((uint8_t)0x03U)
+
+#define DLPF_CFG_MASK                   ((uint8_t)0x07U)
 
 /* PWR_MGMT_1 related macros */
 #define DEV_RESET_MASK                  ((uint8_t)0x80U)
@@ -289,6 +290,18 @@ int16_t Mpu6050_AccelFsSel(Mpu6050_Dev_t *pDev, Mpu6050_AfsSel_t eAfsSel);
 *
 */
 int16_t Mpu6050_GyroFsSel(Mpu6050_Dev_t *pDev, Mpu6050_FsSel_t eFsSel);
+
+/**
+* @brief        Configures the DLPF setting.
+* @details      Configures the digital low pass filter setting.
+*
+* @param[in]    pDev        Pointer to device handler.
+* @param[in]    eDlpfCfg    Digital low pass filter setting value.
+*
+* @return       int16_t     Return code.
+*
+*/
+int16_t Mpu6050_DlpfConfig(Mpu6050_Dev_t *pDev, Mpu6050_DlpfCfg_t eDlpfCfg);
 
 /**
 * @brief        Low power wake control.
